@@ -2,54 +2,54 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface DogApiResponse {
-  message: string;
-  status: string;
-}
+import { DogService } from './app/dog';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, CommonModule, FormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css'], 
 })
 export class App {
-  protected readonly title = signal('page-dog');
+  imagemDog = signal<string[]>([]); 
+  mostrarGaleria = false;
+  nomeDog = '';
 
-  imagemDog = signal('')
-  mostrarGaleria = false
-  nomeDog: string = ''
+  constructor(private dogService: DogService) {}
+
 
   async buscarDog() {
+    const raca = this.nomeDog.trim().toLowerCase();
+    let urlBase = 'https://dog.ceo/api/breeds/image/random';
 
-
-    let url = 'https://dog.ceo/api/breeds/image/random'
-
-    if (this.nomeDog.trim() !== '') {
-      url = `https://dog.ceo/api/breed/${this.nomeDog.toLowerCase()}/images/random`
+    if (raca) {
+      urlBase = `https://dog.ceo/api/breed/${raca}/images/random`;
     }
 
+    this.imagemDog.set([]); 
+    this.mostrarGaleria = true;
 
-    try {
-      const response = await fetch(url)
-      const data = await response.json()
+    const urls: string[] = [];
 
-      this.imagemDog.set(data.message)
-    } catch (error) {
-      console.error('Erro ao buscar dog:', error);
+    for (let i = 0; i < 20; i++) { 
+      try {
+        const res = await fetch(urlBase);
+        const data = await res.json();
+        if (data.status === 'success') {
+          urls.push(data.message);
+        }
+      } catch (err) {
+        console.error('Erro ao buscar imagem:', err);
+      }
     }
+
+    this.imagemDog.set(urls); 
   }
 
-  trocarTela() {
-    this.mostrarGaleria = true
-    console.log('mostraGaleria:', this.mostrarGaleria)
-  }
-
-
-  constructor() {
-    this.buscarDog();
+  voltar() {
+    this.mostrarGaleria = false;
+    this.imagemDog.set([]);
+    this.nomeDog = '';
   }
 }
-

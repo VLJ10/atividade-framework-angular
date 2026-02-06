@@ -1,10 +1,31 @@
-<header class="header" *ngIf="!mostrarGaleria" [class.inicial]="!mostrarGaleria" [class.page2]="mostrarGaleria">
-  <h1 >Dog API</h1>
+<header class="header" [class.inicial]="!mostrarGaleria" [class.galeria]="mostrarGaleria">
+  <h1 *ngIf="!mostrarGaleria">Dog API</h1>
+  <h1 *ngIf="mostrarGaleria">Cachorros</h1>
 </header>
-<main class="main" *ngIf="!mostrarGaleria" [class.inicial]="!mostrarGaleria" [class.galeria]="mostrarGaleria">
-  <input type="text" id="nome" [{ngModel}]="nomeDog">
-  <button (click)="trocarTela()" >Buscar</button>
-</main>
 
+<main class="main" [class.inicial]="!mostrarGaleria" [class.galeria]="mostrarGaleria">
+
+
+  <div *ngIf="!mostrarGaleria" class="tela-inicial">
+    <input type="text" placeholder="Digite a raça" [(ngModel)]="nomeDog">
+    <button (click)="buscarDog()">Buscar</button>
+  </div>
+
+  <div *ngIf="mostrarGaleria" class="galerias">
+
+    <div class="botoes">
+      <button (click)="voltar()">Voltar</button>
+    </div>
+
+    
+    <div class="fotos">
+      <div *ngFor="let dog of imagemDog()" class="foto">
+        <img [src]="dog" alt="Dog" width="200">
+      </div>
+    </div>
+
+  </div>
+
+</main>
 
 <router-outlet></router-outlet>
