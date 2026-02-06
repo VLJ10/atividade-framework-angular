@@ -1,9 +1,9 @@
-<header>
-  <h1>Dog API</h1>
+<header class="header" *ngIf="!mostrarGaleria" [class.inicial]="!mostrarGaleria" [class.page2]="mostrarGaleria">
+  <h1 >Dog API</h1>
 </header>
-<main>
-  <input type="text">
-  <button>Buscar</button>
+<main class="main" *ngIf="!mostrarGaleria" [class.inicial]="!mostrarGaleria" [class.galeria]="mostrarGaleria">
+  <input type="text" id="nome" [{ngModel}]="nomeDog">
+  <button (click)="trocarTela()" >Buscar</button>
 </main>
 
 
